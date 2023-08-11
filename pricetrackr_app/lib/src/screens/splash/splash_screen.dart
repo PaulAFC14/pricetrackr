@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:pricetrackr_app/src/reusable/methods/routes.dart';
+import 'package:pricetrackr_app/src/screens/home/home_screen.dart';
 
 import '../../responsive/responsive-method.dart';
 
-late int responsiveId;
 late double vw;
 late double vh;
 late double ratio;
 late double vr;
 
-// ignore: camel_case_types, must_be_immutable
+// ignore: must_be_immutable
 class Splash_Screen extends StatefulWidget {
   late BuildContext context;
   Splash_Screen(this.context, {super.key}) {
     Map<String, dynamic> responsive =
         ResponsiveData(context: context).getAspectRatio();
-    responsiveId = responsive['id'];
     vw = responsive['vw'];
     vh = responsive['vh'];
     ratio = responsive['ratio'];
@@ -27,9 +27,17 @@ class Splash_Screen extends StatefulWidget {
 
 class _Splash_ScreenState extends State<Splash_Screen> {
   @override
+  void initState() {
+    // TODO: implement initState
+    Future.delayed(Duration(seconds: 2))
+        .then((value) => {Routes(context).goTo(Home_Screen(context))});
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).backgroundColor,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

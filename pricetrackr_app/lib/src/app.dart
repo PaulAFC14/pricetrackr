@@ -12,8 +12,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'Inter',
         primaryColor: Color.fromARGB(255, 18, 167, 95),
+        primaryColorLight: Color.fromARGB(255, 225, 62, 72),
+        primaryColorDark: Color.fromARGB(255, 30, 30, 30),
+        dividerColor: Color.fromARGB(255, 245, 245, 245),
         backgroundColor: Color.fromARGB(255, 255, 255, 255),
         hintColor: Color.fromARGB(255, 30, 30, 30),
+        unselectedWidgetColor: Color.fromARGB(255, 127, 127, 127),
       ),
       darkTheme: ThemeData(),
       home: Splash_Screen(context),
