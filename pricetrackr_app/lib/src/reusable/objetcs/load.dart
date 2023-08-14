@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' show json;
 import 'package:flutter/material.dart';
 
+import '../../responsive/responsive-method.dart';
+
 class Load {
   //Propiedades del objeto
   late int id;
@@ -62,7 +64,7 @@ class Load {
   //API
 
   Future<List<Load>> getRecents() async {
-    String token = '64d58e66aed18';
+    String token = '64da9d71498ef';
     List<Load> loads = [];
 
     var request = http.MultipartRequest(
@@ -116,5 +118,136 @@ class Load {
     }
 
     return loads;
+  }
+
+  //WIDGETS
+
+  Widget recentsList(BuildContext context) {
+    Map<String, dynamic> responsive =
+        ResponsiveData(context: context).getAspectRatio();
+    double vw = responsive['vw'];
+    double vh = responsive['vh'];
+    double ratio = responsive['ratio'];
+    double vr = vh / ratio;
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 5 * vw),
+      child: FutureBuilder<List<Load>>(
+        future: Load().getRecents(),
+        builder: (context, AsyncSnapshot<List<Load>> snapshot) {
+          if (snapshot.hasData) {
+            List<Load> loads = snapshot.data!;
+
+            if (loads.isNotEmpty) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    'Cargas más recientes',
+                    style: TextStyle(
+                      height: 1,
+                      fontSize: 3.5 * vw,
+                      fontWeight: FontWeight.w500,
+                      color: Theme.of(context).hintColor,
+                    ),
+                  ),
+                  SizedBox(height: 1 * vr),
+                  Container(
+                    width: double.infinity,
+                    height: ((14 * vr) * loads.length) + (1 * vr),
+                    padding: EdgeInsets.symmetric(horizontal: 4 * vw),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                          color: Theme.of(context).dividerColor,
+                          width: 0.66 * vw),
+                    ),
+                    child: Container(
+                      width: double.infinity,
+                      height: ((14 * vr) * loads.length) + (1 * vr),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Theme.of(context).dividerColor,
+                      ),
+                      child: ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: loads.length,
+                        itemBuilder: (context, index) {
+                          Load load = loads[index];
+
+                          return Container(
+                            margin: index != 4
+                                ? EdgeInsets.only(bottom: 0.25 * vr)
+                                : null,
+                            width: double.infinity,
+                            height: 14 * vr,
+                            color: Theme.of(context).backgroundColor,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  width: 62.5 * vw,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        load.getEstacion(),
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                          height: 1,
+                                          fontSize: 2.75 * vw,
+                                          fontWeight: FontWeight.w500,
+                                          color: Theme.of(context)
+                                              .unselectedWidgetColor,
+                                        ),
+                                      ),
+                                      SizedBox(height: 1 * vr),
+                                      Text(
+                                        load.getFecha(),
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                          height: 1,
+                                          fontSize: 2.25 * vw,
+                                          fontWeight: FontWeight.w500,
+                                          color: Theme.of(context)
+                                              .unselectedWidgetColor,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  width: 16 * vw,
+                                  child: Text(
+                                    load.getImporte(),
+                                    textAlign: TextAlign.right,
+                                    style: TextStyle(
+                                      height: 1,
+                                      fontSize: 2.75 * vw,
+                                      fontWeight: FontWeight.w500,
+                                      color: load.getColor(context),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            } else {
+              return Text('Vacío');
+            }
+          } else {
+            return Text('Cargando...');
+          }
+        },
+      ),
+    );
   }
 }
